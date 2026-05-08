@@ -1,17 +1,89 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MatrixRain from '../components/MatrixRain';
+import GlitchText from '../components/GlitchText';
+import ArticleCard from '../components/ArticleCard.astro';
+import TagCloud from '../components/TagCloud.astro';
+import { getAllCtfPosts, getAllVulnPosts, getAllTags } from '../lib/content';
+
+const ctfPosts = await getAllCtfPosts();
+const vulnPosts = await getAllVulnPosts();
+const allPosts = [...ctfPosts, ...vulnPosts]
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 6);
+const allTags = await getAllTags();
+
+const heroTags = ['Web Security', 'Pwn', 'Crypto', 'Reverse', 'Bug Bounty'];
+const socialLinks = [
+  { label: 'GH', title: 'GitHub', href: '#' },
+  { label: 'CT', title: 'CTFtime', href: '#' },
+  { label: 'TW', title: 'Twitter', href: '#' },
+  { label: 'EM', title: 'Email', href: '#' },
+];
 ---
 
 <BaseLayout>
+  <MatrixRain client:load />
+
   <section class="hero">
-    <h1 class="hero-name">TT</h1>
-    <p class="hero-subtitle">探索未知漏洞 · 攻防之间寻找真理</p>
+    <div class="hero-badge">SECURITY RESEARCHER & CTF PLAYER</div>
+    <GlitchText text="TT" tag="h1" className="hero-name" client:load />
+    <p class="hero-subtitle">
+      <span class="highlight">&gt;</span> 探索未知漏洞 · 攻防之间寻找真理
+    </p>
+    <div class="hero-tags">
+      {heroTags.map(tag => (
+        <span class="hero-tag">{tag}</span>
+      ))}
+    </div>
+    <div class="hero-social">
+      {socialLinks.map(link => (
+        <a href={link.href} title={link.title} class="hero-social-link">{link.label}</a>
+      ))}
+    </div>
+    <div class="hero-scroll">
+      SCROLL DOWN
+      <span class="arrow">↓</span>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section class="articles-section">
+    <div class="section-header">
+      <h2 class="section-title">最新文章</h2>
+      <a href="/ctf/" class="section-more">查看全部 →</a>
+    </div>
+    <div class="articles-grid">
+      {allPosts.map(post => (
+        <ArticleCard
+          collection={'category' in post.data ? 'ctf' : 'vuln'}
+          category={'category' in post.data ? `CTF · ${post.data.category}` : `漏洞 · ${post.data.type}`}
+          date={post.data.date}
+          title={post.data.title}
+          excerpt={(post.body || '').slice(0, 100).replace(/[#*`\n]/g, '') + '...'}
+          tags={post.data.tags}
+          href={'category' in post.data ? `/ctf/${post.slug}` : `/vuln/${post.slug}`}
+        />
+      ))}
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section class="tags-section">
+    <div class="section-header">
+      <h2 class="section-title">热门标签</h2>
+    </div>
+    <TagCloud tags={allTags} />
   </section>
 </BaseLayout>
 
 <style>
   .hero {
-    min-height: 80vh;
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,13 +92,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding: 120px 20px 80px;
   }
 
-  .hero-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 96px;
-    font-weight: 900;
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, #020a02 70%);
+    z-index: -1;
+  }
+
+  .hero-badge {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
     color: #00ff41;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    padding: 6px 20px;
+    border: 1px solid #00ff4133;
+    border-radius: 2px;
+    background: #00ff4133;
+  }
+
+  .hero :global(.hero-name) {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 900;
     letter-spacing: 8px;
-    text-shadow: 0 0 10px #00ff41, 0 0 40px #00ff4133, 0 0 80px #00ff4133;
+    text-transform: uppercase;
+    line-height: 1.1;
   }
 
   .hero-subtitle {
@@ -35,5 +128,170 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: #4a7a4a;
     margin-top: 20px;
     letter-spacing: 3px;
+  }
+
+  .hero-subtitle .highlight {
+    color: #00ff41;
+    text-shadow: 0 0 8px #00ff4133;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    padding: 6px 16px;
+    border: 1px solid #00ff4133;
+    border-radius: 2px;
+    color: #00ff41;
+    background: rgba(0, 255, 65, 0.05);
+    transition: all 0.3s;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  .hero-tag:hover {
+    background: rgba(0, 255, 65, 0.15);
+    border-color: #00ff41;
+    box-shadow: 0 0 15px #00ff4133;
+    transform: translateY(-2px);
+  }
+
+  .hero-social {
+    display: flex;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .hero-social-link {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #00ff4115;
+    border-radius: 4px;
+    color: #4a7a4a;
+    text-decoration: none;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+
+  .hero-social-link:hover {
+    border-color: #00ff41;
+    color: #00ff41;
+    box-shadow: 0 0 20px #00ff4133;
+    transform: translateY(-3px);
+    background: #00ff4133;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #4a7a4a;
+    letter-spacing: 3px;
+    animation: float 2s ease-in-out infinite;
+  }
+
+  .hero-scroll .arrow {
+    display: block;
+    text-align: center;
+    margin-top: 4px;
+    color: #00ff41;
+    font-size: 16px;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  .section-divider {
+    position: relative;
+    z-index: 2;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00ff4133, #00ff41, #00ff4133, transparent);
+    margin: 0 40px;
+  }
+
+  .articles-section {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #00ff41;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px #00ff4133;
+  }
+
+  .section-title::before {
+    content: '> ';
+    color: #4a7a4a;
+  }
+
+  .section-more {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: #4a7a4a;
+    text-decoration: none;
+    border: 1px solid #00ff4115;
+    padding: 8px 20px;
+    border-radius: 2px;
+    transition: all 0.3s;
+    letter-spacing: 2px;
+  }
+
+  .section-more:hover {
+    border-color: #00ff41;
+    color: #00ff41;
+    box-shadow: 0 0 12px #00ff4133;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .tags-section {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  @media (max-width: 768px) {
+    .hero { padding: 100px 16px 60px; }
+    .hero :global(.hero-name) { letter-spacing: 4px; }
+    .articles-section { padding: 60px 20px; }
+    .articles-grid { grid-template-columns: 1fr; }
+    .tags-section { padding: 0 20px 60px; }
   }
 </style>
