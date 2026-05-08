@@ -1,0 +1,457 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="关于 — SecBlog">
+  <section class="about-section">
+    <span class="page-label">PAGE / ABOUT</span>
+    <h1 class="page-title">关于我</h1>
+    <p class="page-desc">// WHOAMI</p>
+
+    <div class="about-grid">
+      <div class="about-card profile-card">
+        <div class="avatar-frame">
+          <div class="avatar-placeholder">TT</div>
+        </div>
+        <h2 class="profile-name">TT</h2>
+        <p class="profile-role">Security Researcher & CTF Player</p>
+        <div class="profile-links">
+          <a href="#" class="profile-link" title="GitHub">
+            <span class="link-icon">⌘</span>
+            <span>GitHub</span>
+          </a>
+          <a href="#" class="profile-link" title="CTFtime">
+            <span class="link-icon">⚑</span>
+            <span>CTFtime</span>
+          </a>
+          <a href="#" class="profile-link" title="Email">
+            <span class="link-icon">✉</span>
+            <span>Email</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="about-card bio-card">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">about.sh</span>
+        </div>
+        <div class="terminal-body">
+          <p><span class="prompt">$</span> cat about.txt</p>
+          <p class="output">网络安全方向在校大学生，主攻 Web 安全与二进制安全。</p>
+          <p class="output">热衷于 CTF 竞赛，擅长 Web、Crypto 方向，偶尔打打 Pwn。</p>
+          <p class="output">平时也会挖一些漏洞，关注企业安全与红队攻防。</p>
+          <p><span class="prompt">$</span> cat skills.txt</p>
+          <p class="output">
+            <span class="skill-tag">Web渗透</span>
+            <span class="skill-tag">代码审计</span>
+            <span class="skill-tag">逆向分析</span>
+            <span class="skill-tag">密码学</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Go</span>
+            <span class="skill-tag">Java</span>
+          </p>
+          <p><span class="prompt">$</span> cat goals.txt</p>
+          <p class="output">未来方向：安全服务 / 红队攻防 / 安全研究</p>
+          <p><span class="prompt">$</span> <span class="cursor">_</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-card stats-card">
+      <div class="stats-header">
+        <span class="stats-icon">◈</span>
+        <h3>CTF 战绩</h3>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-value">--</span>
+          <span class="stat-label">参赛次数</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">--</span>
+          <span class="stat-label">Top 3</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">--</span>
+          <span class="stat-label">解题数</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">--</span>
+          <span class="stat-label">Writeup</span>
+        </div>
+      </div>
+      <p class="stats-hint">* 数据将随内容更新自动统计</p>
+    </div>
+
+    <div class="about-card contact-card">
+      <div class="contact-header">
+        <span class="contact-icon">📡</span>
+        <h3>联系方式</h3>
+      </div>
+      <p class="contact-desc">欢迎交流安全相关话题，CTF 组队也欢迎联系！</p>
+      <div class="contact-methods">
+        <div class="contact-item">
+          <span class="method-label">Email</span>
+          <span class="method-value">your-email@example.com</span>
+        </div>
+        <div class="contact-item">
+          <span class="method-label">GitHub</span>
+          <span class="method-value">github.com/your-username</span>
+        </div>
+        <div class="contact-item">
+          <span class="method-label">CTFtime</span>
+          <span class="method-value">ctftime.org/user/your-id</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-section {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  .page-label {
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: #4a7a4a;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    border: 1px solid #00ff4115;
+    border-radius: 2px;
+  }
+
+  .page-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: #00ff41;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px #00ff4133;
+    margin-bottom: 8px;
+  }
+
+  .page-desc {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: #4a7a4a;
+    margin-bottom: 48px;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .about-card {
+    background: #0a140a;
+    border: 1px solid #00ff4115;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .about-card:hover {
+    border-color: #00ff4133;
+    box-shadow: 0 4px 24px rgba(0, 255, 65, 0.06);
+  }
+
+  .profile-card {
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .avatar-frame {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    border: 2px solid #00ff4133;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: #0f1f0f;
+  }
+
+  .avatar-frame::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 1px dashed #00ff4122;
+    border-radius: 6px;
+  }
+
+  .avatar-placeholder {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #00ff41;
+    text-shadow: 0 0 20px #00ff4133;
+  }
+
+  .profile-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #00ff41;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+  }
+
+  .profile-role {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #4a7a4a;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+
+  .profile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .profile-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border: 1px solid #00ff4115;
+    border-radius: 2px;
+    text-decoration: none;
+    color: #4a7a4a;
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    transition: all 0.3s;
+  }
+
+  .profile-link:hover {
+    border-color: #00ff41;
+    color: #00ff41;
+    background: #00ff4133;
+  }
+
+  .link-icon {
+    color: #00ff41;
+    font-size: 14px;
+  }
+
+  .bio-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #060e06;
+    border-bottom: 1px solid #00ff4115;
+  }
+
+  .terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .terminal-dot.red { background: #ff5f56; }
+  .terminal-dot.yellow { background: #ffbd2e; }
+  .terminal-dot.green { background: #27c93f; }
+
+  .terminal-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #4a7a4a;
+    margin-left: 8px;
+  }
+
+  .terminal-body {
+    padding: 20px 24px;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 2;
+  }
+
+  .prompt {
+    color: #00ff41;
+    margin-right: 8px;
+  }
+
+  .output {
+    color: #c0ffc0;
+    padding-left: 20px;
+  }
+
+  .skill-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border: 1px solid #00ff4133;
+    border-radius: 2px;
+    margin: 2px 4px 2px 0;
+    color: #00ff41;
+    background: rgba(0, 255, 65, 0.05);
+  }
+
+  .cursor {
+    color: #00ff41;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .stats-card {
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .stats-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .stats-icon {
+    color: #ffe600;
+    font-size: 18px;
+  }
+
+  .stats-header h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #c0ffc0;
+    letter-spacing: 2px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 16px;
+    border: 1px solid #00ff4115;
+    border-radius: 4px;
+    background: #060e06;
+  }
+
+  .stat-value {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #00ff41;
+    text-shadow: 0 0 10px #00ff4133;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #4a7a4a;
+    letter-spacing: 1px;
+  }
+
+  .stats-hint {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: #4a3a4a;
+    text-align: center;
+  }
+
+  .contact-card {
+    padding: 28px;
+  }
+
+  .contact-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .contact-icon {
+    font-size: 18px;
+  }
+
+  .contact-header h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #c0ffc0;
+    letter-spacing: 2px;
+  }
+
+  .contact-desc {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: #4a7a4a;
+    margin-bottom: 20px;
+  }
+
+  .contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    border: 1px solid #00ff4115;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  .contact-item:hover {
+    border-color: #00ff4133;
+    background: #0f1f0f;
+  }
+
+  .method-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #00ff41;
+    min-width: 80px;
+    letter-spacing: 1px;
+  }
+
+  .method-value {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: #c0ffc0;
+  }
+
+  @media (max-width: 768px) {
+    .about-section { padding: 40px 16px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

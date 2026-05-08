@@ -1,0 +1,380 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllVulnPosts } from '../../lib/content';
+
+const posts = await getAllVulnPosts();
+
+const typeColors: Record<string, string> = {
+  CVE: 'type-cve',
+  '0day': 'type-0day',
+  '逻辑漏洞': 'type-logic',
+  '配置不当': 'type-config',
+};
+
+const severityColors: Record<string, string> = {
+  Critical: 'sev-critical',
+  High: 'sev-high',
+  Medium: 'sev-medium',
+  Low: 'sev-low',
+};
+
+const statusLabels: Record<string, string> = {
+  patched: '已修复',
+  reported: '已报告',
+  unpatched: '未修复',
+};
+
+const statusColors: Record<string, string> = {
+  patched: 'status-patched',
+  reported: 'status-reported',
+  unpatched: 'status-unpatched',
+};
+
+const types = ['全部', 'CVE', '0day', '逻辑漏洞', '配置不当'];
+const severities = ['全部', 'Critical', 'High', 'Medium', 'Low'];
+---
+
+<BaseLayout title="漏洞分析 — SecBlog">
+  <section class="page-section">
+    <span class="page-label">PAGE / VULNERABILITY</span>
+    <h1 class="page-title">漏洞分析</h1>
+    <p class="page-desc">// 深入挖掘漏洞根因，从攻击者视角理解安全</p>
+
+    <div class="filter-bar">
+      <span class="filter-label">TYPE:</span>
+      {types.map((t, i) => (
+        <button class:list={['filter-btn', i === 0 ? 'active' : '']} data-filter-type="type" data-value={t}>
+          {t}
+        </button>
+      ))}
+    </div>
+
+    <div class="filter-bar">
+      <span class="filter-label">SEVERITY:</span>
+      {severities.map((s, i) => (
+        <button class:list={['filter-btn', i === 0 ? 'active' : '']} data-filter-type="severity" data-value={s}>
+          {s}
+        </button>
+      ))}
+    </div>
+
+    <div class="vuln-list">
+      {posts.map(post => (
+        <a href={`/vuln/${post.slug}`} class="vuln-card" data-type={post.data.type} data-severity={post.data.severity}>
+          <div class="vuln-card-header">
+            <div class="vuln-card-left">
+              <span class:list={['vuln-type-badge', typeColors[post.data.type] || '']}>
+                {post.data.type}
+              </span>
+              <span class:list={['vuln-severity-badge', severityColors[post.data.severity] || '']}>
+                {post.data.severity}
+              </span>
+              <span class:list={['vuln-status-badge', statusColors[post.data.status] || '']}>
+                {statusLabels[post.data.status]}
+              </span>
+            </div>
+            <span class="vuln-date">{post.data.date.toLocaleDateString('zh-CN')}</span>
+          </div>
+          <h3 class="vuln-title">{post.data.title}</h3>
+          {post.data.cve && (
+            <span class="vuln-cve">{post.data.cve}</span>
+          )}
+          <div class="vuln-tags">
+            {post.data.tags.map(tag => (
+              <span class="vuln-tag">#{tag}</span>
+            ))}
+          </div>
+          <span class="vuln-arrow">→</span>
+        </a>
+      ))}
+    </div>
+
+    {posts.length === 0 && (
+      <div class="empty-state">
+        <p class="empty-icon">⊘</p>
+        <p class="empty-text">暂无漏洞分析文章</p>
+        <p class="empty-hint">新内容正在撰写中...</p>
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-section {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  .page-label {
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: #ff0040;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    border: 1px solid #ff004015;
+    border-radius: 2px;
+  }
+
+  .page-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: #ff0040;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px #ff004033, 0 0 60px #ff004033;
+    margin-bottom: 8px;
+  }
+
+  .page-desc {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: #7a4a4a;
+    margin-bottom: 40px;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #7a4a4a;
+    margin-right: 8px;
+  }
+
+  .filter-btn {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    padding: 6px 16px;
+    border: 1px solid #ff004015;
+    border-radius: 2px;
+    background: transparent;
+    color: #7a4a4a;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: #ff0040;
+    color: #ff0040;
+    background: #ff004033;
+    box-shadow: 0 0 12px #ff004033;
+  }
+
+  .vuln-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+    margin-top: 24px;
+  }
+
+  .vuln-card {
+    display: block;
+    background: #0a0a14;
+    border: 1px solid #ff004015;
+    border-radius: 4px;
+    padding: 24px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vuln-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 0;
+    background: #ff0040;
+    box-shadow: 0 0 10px #ff0040;
+    transition: height 0.4s;
+  }
+
+  .vuln-card:hover {
+    border-color: #ff004033;
+    background: #0f0a1a;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(255, 0, 64, 0.08);
+  }
+
+  .vuln-card:hover::before {
+    height: 100%;
+  }
+
+  .vuln-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .vuln-card-left {
+    display: flex;
+    gap: 6px;
+  }
+
+  .vuln-type-badge, .vuln-severity-badge, .vuln-status-badge {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+
+  .type-cve { background: rgba(0, 240, 255, 0.1); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.2); }
+  .type-0day { background: rgba(255, 0, 64, 0.1); color: #ff0040; border: 1px solid rgba(255, 0, 64, 0.2); }
+  .type-logic { background: rgba(255, 230, 0, 0.1); color: #ffe600; border: 1px solid rgba(255, 230, 0, 0.2); }
+  .type-config { background: rgba(0, 255, 65, 0.1); color: #00ff41; border: 1px solid rgba(0, 255, 65, 0.2); }
+
+  .sev-critical { background: rgba(255, 0, 64, 0.15); color: #ff0040; border: 1px solid rgba(255, 0, 64, 0.3); }
+  .sev-high { background: rgba(255, 140, 0, 0.15); color: #ff8c00; border: 1px solid rgba(255, 140, 0, 0.3); }
+  .sev-medium { background: rgba(255, 230, 0, 0.15); color: #ffe600; border: 1px solid rgba(255, 230, 0, 0.3); }
+  .sev-low { background: rgba(0, 255, 65, 0.15); color: #00ff41; border: 1px solid rgba(0, 255, 65, 0.3); }
+
+  .status-patched { background: rgba(0, 255, 65, 0.1); color: #00ff41; border: 1px solid rgba(0, 255, 65, 0.2); }
+  .status-reported { background: rgba(255, 230, 0, 0.1); color: #ffe600; border: 1px solid rgba(255, 230, 0, 0.2); }
+  .status-unpatched { background: rgba(255, 0, 64, 0.1); color: #ff0040; border: 1px solid rgba(255, 0, 64, 0.2); }
+
+  .vuln-date {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #7a4a4a;
+  }
+
+  .vuln-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffc0c0;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    transition: color 0.3s;
+  }
+
+  .vuln-card:hover .vuln-title {
+    color: #ff0040;
+  }
+
+  .vuln-cve {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #00f0ff;
+    margin-bottom: 12px;
+    display: inline-block;
+  }
+
+  .vuln-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .vuln-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: #7a4a4a;
+    padding: 2px 8px;
+    border: 1px solid #ff004015;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  .vuln-card:hover .vuln-tag {
+    border-color: #ff004033;
+  }
+
+  .vuln-arrow {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    color: #7a4a4a;
+    transition: all 0.3s;
+  }
+
+  .vuln-card:hover .vuln-arrow {
+    color: #ff0040;
+    transform: translateX(4px);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    color: #ff004033;
+    margin-bottom: 16px;
+  }
+
+  .empty-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    color: #7a4a4a;
+    margin-bottom: 8px;
+  }
+
+  .empty-hint {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: #4a3a3a;
+  }
+
+  @media (max-width: 768px) {
+    .page-section { padding: 40px 16px; }
+    .vuln-list { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const typeBtns = document.querySelectorAll('[data-filter-type="type"]');
+  const sevBtns = document.querySelectorAll('[data-filter-type="severity"]');
+  let activeType = '全部';
+  let activeSev = '全部';
+
+  function applyFilters() {
+    document.querySelectorAll('.vuln-card').forEach(card => {
+      const cardType = card.getAttribute('data-type') || '';
+      const cardSev = card.getAttribute('data-severity') || '';
+      const matchType = activeType === '全部' || cardType === activeType;
+      const matchSev = activeSev === '全部' || cardSev === activeSev;
+      (card as HTMLElement).style.display = matchType && matchSev ? '' : 'none';
+    });
+  }
+
+  typeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      typeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeType = btn.getAttribute('data-value') || '全部';
+      applyFilters();
+    });
+  });
+
+  sevBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sevBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeSev = btn.getAttribute('data-value') || '全部';
+      applyFilters();
+    });
+  });
+</script>

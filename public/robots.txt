@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ttsec.dev/sitemap.xml
+Sitemap: https://ttsec.dev/sitemap-index.xml

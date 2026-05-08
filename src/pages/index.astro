@@ -8,10 +8,22 @@ import { getAllCtfPosts, getAllVulnPosts, getAllTags } from '../lib/content';
 
 const ctfPosts = await getAllCtfPosts();
 const vulnPosts = await getAllVulnPosts();
-const allPosts = [...ctfPosts, ...vulnPosts]
+const allPosts = [...ctfPosts.map(p => ({ ...p, type: 'ctf' as const })), ...vulnPosts.map(p => ({ ...p, type: 'vuln' as const }))]
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 6);
 const allTags = await getAllTags();
+
+function extractExcerpt(body: string | undefined): string {
+  if (!body) return '';
+  return body
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[([^\]]*)\]\(.*?\)/g, '$1')
+    .replace(/<[^>]*>/g, '')
+    .replace(/[#*`~>\-|]/g, '')
+    .replace(/\n+/g, ' ')
+    .slice(0, 120)
+    .trim() + '...';
+}
 
 const heroTags = ['Web Security', 'Pwn', 'Crypto', 'Reverse', 'Bug Bounty'];
 const socialLinks = [
@@ -57,13 +69,13 @@ const socialLinks = [
     <div class="articles-grid">
       {allPosts.map(post => (
         <ArticleCard
-          collection={'category' in post.data ? 'ctf' : 'vuln'}
-          category={'category' in post.data ? `CTF · ${post.data.category}` : `漏洞 · ${post.data.type}`}
+          collection={post.type}
+          category={post.type === 'ctf' ? `CTF · ${post.data.category}` : `漏洞 · ${post.data.type}`}
           date={post.data.date}
           title={post.data.title}
-          excerpt={(post.body || '').slice(0, 100).replace(/[#*`\n]/g, '') + '...'}
+          excerpt={extractExcerpt(post.body)}
           tags={post.data.tags}
-          href={'category' in post.data ? `/ctf/${post.slug}` : `/vuln/${post.slug}`}
+          href={post.type === 'ctf' ? `/ctf/${post.slug}` : `/vuln/${post.slug}`}
         />
       ))}
     </div>

@@ -7,11 +7,15 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
 }
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const {
   title = 'SecBlog — TT 的安全技术博客',
   description = 'CTF Writeup、漏洞分析、安全研究',
+  image = '/og-image.png',
 } = Astro.props;
 ---
 
@@ -23,13 +27,33 @@ const {
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL.href} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <title>{title}</title>
+    <meta property="og:url" content={canonicalURL.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={new URL(image, Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, Astro.site).href} />
+    <meta name="theme-color" content="#020a02" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "SecBlog",
+      "description": description,
+      "url": Astro.site?.href,
+      "author": {
+        "@type": "Person",
+        "name": "TT",
+        "url": Astro.site?.href
+      }
+    })} />
   </head>
   <body>
     <Navbar />
@@ -39,4 +63,13 @@ const {
     <Footer />
     <Scanlines />
   </body>
+
+  <script is:inline>
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        window.location.href = '/search/';
+      }
+    });
+  </script>
 </html>

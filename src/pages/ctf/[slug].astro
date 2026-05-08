@@ -1,0 +1,31 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('ctf');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<ArticleLayout
+  title={post.data.title}
+  description={`${post.data.event} ${post.data.category} 题目 Writeup`}
+  category={`CTF · ${post.data.category}`}
+  categoryType="ctf"
+  date={post.data.date}
+  tags={post.data.tags}
+  breadcrumbs={[
+    { label: '首页', href: '/' },
+    { label: 'CTF', href: '/ctf/' },
+    { label: post.data.event, href: '/ctf/' },
+  ]}
+>
+  <Content />
+</ArticleLayout>

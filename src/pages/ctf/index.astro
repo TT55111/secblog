@@ -1,0 +1,358 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCtfEvents } from '../../lib/content';
+import { getRankSuffix } from '../../lib/utils';
+
+const events = await getCtfEvents();
+const categories = ['全部', 'Web', 'Pwn', 'Crypto', 'Reverse', 'Misc'];
+
+const catColors: Record<string, string> = {
+  Web: 'cat-web',
+  Pwn: 'cat-pwn',
+  Crypto: 'cat-crypto',
+  Reverse: 'cat-reverse',
+  Misc: 'cat-misc',
+};
+
+const diffColors: Record<string, string> = {
+  Easy: 'diff-easy',
+  Medium: 'diff-medium',
+  Hard: 'diff-hard',
+};
+
+const eventData = [...events.entries()].map(([eventName, posts]) => ({
+  eventName,
+  posts,
+  firstPost: posts[0],
+  rank: posts[0].data.rank,
+  isTop3: posts[0].data.rank && posts[0].data.rank <= 3,
+  rankDisplay: getRankSuffix(posts[0].data.rank),
+  eventCategories: [...new Set(posts.map(p => p.data.category))],
+  eventCategoriesStr: [...new Set(posts.map(p => p.data.category))].join(','),
+}));
+---
+
+<BaseLayout title="CTF Writeups — SecBlog">
+  <section class="page-section">
+    <span class="page-label">PAGE / CTF</span>
+    <h1 class="page-title">CTF Writeups</h1>
+    <p class="page-desc">// 攻防对抗中的思路记录与技术沉淀</p>
+
+    <div class="filter-bar">
+      <span class="filter-label">FILTER:</span>
+      {categories.map((cat, i) => (
+        <button class:list={['filter-btn', i === 0 ? 'active' : '']} data-category={cat}>
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    {eventData.map(data => (
+        <div class="ctf-event" data-categories={data.eventCategoriesStr}>
+          <div class="ctf-event-header">
+            <div class="ctf-event-left">
+              <div class:list={['ctf-rank', data.isTop3 ? 'top3' : 'normal']}>
+                {data.rankDisplay}
+              </div>
+              <div class="ctf-event-info">
+                <h3>{data.eventName}</h3>
+                <div class="ctf-event-meta">
+                  <span>{data.firstPost.data.date.toLocaleDateString('zh-CN')}</span>
+                  <span>·</span>
+                  {data.firstPost.data.team && <span>队伍: {data.firstPost.data.team}</span>}
+                  {data.rank && <span>· 排名: {data.rank}</span>}
+                </div>
+              </div>
+            </div>
+            <div class="ctf-event-right">
+              {data.eventCategories.map(cat => (
+                <span class:list={['ctf-cat-tag', catColors[cat] || '']}>{cat}</span>
+              ))}
+            </div>
+          </div>
+          <div class="ctf-writeups">
+            {data.posts.map(post => (
+              <a href={`/ctf/${post.slug}`} class="writeup-item">
+                <div class="writeup-item-left">
+                  <span class:list={['writeup-difficulty', diffColors[post.data.difficulty] || '']}>
+                    {post.data.difficulty}
+                  </span>
+                  <span class="writeup-title">{post.data.title}</span>
+                </div>
+                <span class="writeup-arrow">→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .page-section {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 40px;
+  }
+
+  .page-label {
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: #4a7a4a;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    border: 1px solid #00ff4115;
+    border-radius: 2px;
+  }
+
+  .page-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: #00ff41;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px #00ff4133, 0 0 60px #00ff4133;
+    margin-bottom: 8px;
+  }
+
+  .page-desc {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: #4a7a4a;
+    margin-bottom: 40px;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #4a7a4a;
+    margin-right: 8px;
+  }
+
+  .filter-btn {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    padding: 6px 16px;
+    border: 1px solid #00ff4115;
+    border-radius: 2px;
+    background: transparent;
+    color: #4a7a4a;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: #00ff41;
+    color: #00ff41;
+    background: #00ff4133;
+    box-shadow: 0 0 12px #00ff4133;
+  }
+
+  .ctf-event {
+    background: #0a140a;
+    border: 1px solid #00ff4115;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .ctf-event:hover {
+    border-color: #00ff4133;
+    box-shadow: 0 4px 24px rgba(0, 255, 65, 0.06);
+  }
+
+  .ctf-event-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .ctf-event:hover .ctf-event-header {
+    background: #0f1f0f;
+  }
+
+  .ctf-event-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .ctf-rank {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid #00ff4115;
+  }
+
+  .ctf-rank.top3 {
+    color: #ffe600;
+    border-color: rgba(255, 230, 0, 0.3);
+    background: rgba(255, 230, 0, 0.05);
+    text-shadow: 0 0 10px rgba(255, 230, 0, 0.3);
+  }
+
+  .ctf-rank.normal {
+    color: #4a7a4a;
+  }
+
+  .ctf-event-info h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #c0ffc0;
+    margin-bottom: 4px;
+  }
+
+  .ctf-event:hover .ctf-event-info h3 {
+    color: #00ff41;
+  }
+
+  .ctf-event-meta {
+    display: flex;
+    gap: 16px;
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #4a7a4a;
+  }
+
+  .ctf-event-right {
+    display: flex;
+    gap: 6px;
+  }
+
+  .ctf-cat-tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+
+  .cat-web { background: rgba(0, 240, 255, 0.1); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.2); }
+  .cat-pwn { background: rgba(255, 0, 64, 0.1); color: #ff0040; border: 1px solid rgba(255, 0, 64, 0.2); }
+  .cat-crypto { background: rgba(180, 0, 255, 0.1); color: #b400ff; border: 1px solid rgba(180, 0, 255, 0.2); }
+  .cat-reverse { background: rgba(255, 230, 0, 0.1); color: #ffe600; border: 1px solid rgba(255, 230, 0, 0.2); }
+  .cat-misc { background: rgba(0, 255, 65, 0.1); color: #00ff41; border: 1px solid rgba(0, 255, 65, 0.2); }
+
+  .ctf-writeups {
+    border-top: 1px solid #00ff4115;
+    padding: 16px 24px;
+    display: none;
+  }
+
+  .ctf-event.expanded .ctf-writeups {
+    display: block;
+  }
+
+  .writeup-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-left: 2px solid #00ff4115;
+    margin-bottom: 4px;
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .writeup-item:hover {
+    border-left-color: #00ff41;
+    background: #0f1f0f;
+    padding-left: 20px;
+  }
+
+  .writeup-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .writeup-difficulty {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+
+  .diff-easy { color: #00ff41; border: 1px solid #00ff4133; }
+  .diff-medium { color: #ffe600; border: 1px solid rgba(255, 230, 0, 0.3); }
+  .diff-hard { color: #ff0040; border: 1px solid rgba(255, 0, 64, 0.3); }
+
+  .writeup-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    color: #c0ffc0;
+  }
+
+  .writeup-item:hover .writeup-title {
+    color: #00ff41;
+  }
+
+  .writeup-arrow {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: #4a7a4a;
+    transition: all 0.3s;
+  }
+
+  .writeup-item:hover .writeup-arrow {
+    color: #00ff41;
+  }
+
+  @media (max-width: 768px) {
+    .page-section { padding: 40px 16px; }
+    .ctf-event-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.ctf-event-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const parent = header.parentElement;
+      if (parent) parent.classList.toggle('expanded');
+    });
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const category = btn.getAttribute('data-category');
+      document.querySelectorAll('.ctf-event').forEach(event => {
+        if (category === '全部') {
+          (event as HTMLElement).style.display = '';
+        } else {
+          const cats = (event.getAttribute('data-categories') || '').split(',');
+          (event as HTMLElement).style.display = cats.includes(category!) ? '' : 'none';
+        }
+      });
+    });
+  });
+</script>

@@ -12,6 +12,8 @@ export default function MatrixRain({ opacity = 0.12, fontSize = 14 }: MatrixRain
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -20,9 +22,13 @@ export default function MatrixRain({ opacity = 0.12, fontSize = 14 }: MatrixRain
     let drops = Array(columns).fill(1);
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      columns = Math.floor(canvas.width / fontSize);
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.scale(dpr, dpr);
+      columns = Math.floor(window.innerWidth / fontSize);
       drops = Array(columns).fill(1);
     };
 
@@ -55,10 +61,24 @@ export default function MatrixRain({ opacity = 0.12, fontSize = 14 }: MatrixRain
       }
     };
 
-    const interval = setInterval(draw, 50);
+    if (prefersReducedMotion) {
+      draw();
+      return () => {
+        window.removeEventListener('resize', resizeCanvas);
+      };
+    }
+
+    let animationId: number;
+
+    const animate = () => {
+      draw();
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animationId = requestAnimationFrame(animate);
 
     return () => {
-      clearInterval(interval);
+      cancelAnimationFrame(animationId);
       window.removeEventListener('resize', resizeCanvas);
     };
   }, [fontSize]);

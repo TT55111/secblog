@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import GiscusComments from '../components/GiscusComments';
 
 interface Props {
   title: string;
@@ -23,9 +24,9 @@ const {
 ---
 
 <BaseLayout title={`${title} — SecBlog`} description={description}>
-  <article class="article-detail">
+  <article class="article-detail" data-pagefind-body>
     {breadcrumbs.length > 0 && (
-      <nav class="breadcrumb">
+      <nav class="breadcrumb" data-pagefind-ignore>
         {breadcrumbs.map((crumb, i) => (
           <>
             {i > 0 && <span class="separator">/</span>}
@@ -35,7 +36,7 @@ const {
       </nav>
     )}
 
-    <header class="detail-header">
+    <header class="detail-header" data-pagefind-ignore>
       {category && (
         <span class:list={['detail-category', categoryType === 'ctf' ? 'cat-ctf' : 'cat-vuln']}>
           {category}
@@ -53,19 +54,18 @@ const {
       <slot />
     </div>
 
-    {tags.length > 0 && (
-      <footer class="detail-footer">
+    <footer class="detail-footer" data-pagefind-ignore>
+      {tags.length > 0 && (
         <div class="detail-tags">
           {tags.map(tag => (
             <span class="detail-tag">#{tag}</span>
           ))}
         </div>
-        <div class="comments-placeholder">
-          <p>💬 Giscus 评论区将在此加载</p>
-          <p class="giscus-hint">基于 GitHub Discussions · 无需服务器</p>
-        </div>
-      </footer>
-    )}
+      )}
+      <div class="giscus-container">
+        <GiscusComments client:visible term={Astro.url.pathname} />
+      </div>
+    </footer>
   </article>
 </BaseLayout>
 
@@ -212,20 +212,8 @@ const {
     background: #00ff4133;
   }
 
-  .comments-placeholder {
-    background: #0a140a;
-    border: 1px dashed #00ff4133;
-    border-radius: 4px;
-    padding: 40px;
-    text-align: center;
-    font-family: 'Fira Code', monospace;
-    font-size: 12px;
-    color: #4a7a4a;
-  }
-
-  .giscus-hint {
-    color: #00ff41;
-    margin-top: 8px;
+  .giscus-container {
+    margin-top: 32px;
   }
 
   @media (max-width: 768px) {

@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="搜索 — SecBlog">
+  <section class="search-section" data-pagefind-body>
+    <span class="page-label">PAGE / SEARCH</span>
+    <h1 class="page-title">搜索</h1>
+    <p class="page-desc">// 全站内容检索</p>
+
+    <div id="search" class="search-container"></div>
+
+    <div class="search-tips">
+      <p class="tip-title">搜索技巧</p>
+      <ul class="tip-list">
+        <li>输入关键词即可搜索全站文章</li>
+        <li>支持 CTF 题目名称、漏洞编号、技术标签等</li>
+        <li>使用 <code>Ctrl+K</code> 快速打开搜索</li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .search-section {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    min-height: 60vh;
+  }
+
+  .page-label {
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    color: #4a7a4a;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 4px 12px;
+    border: 1px solid #00ff4115;
+    border-radius: 2px;
+  }
+
+  .page-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: #00ff41;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px #00ff4133;
+    margin-bottom: 8px;
+  }
+
+  .page-desc {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: #4a7a4a;
+    margin-bottom: 40px;
+  }
+
+  .search-container {
+    margin-bottom: 48px;
+  }
+
+  .search-tips {
+    background: #0a140a;
+    border: 1px solid #00ff4115;
+    border-radius: 4px;
+    padding: 24px;
+  }
+
+  .tip-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #00ff41;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .tip-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .tip-list li {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: #4a7a4a;
+    padding: 6px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .tip-list li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: #00ff41;
+  }
+
+  .tip-list code {
+    background: rgba(0, 255, 65, 0.08);
+    color: #00ff41;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 11px;
+  }
+
+  @media (max-width: 768px) {
+    .search-section { padding: 40px 16px; }
+  }
+</style>
+
+<style is:global>
+  .pagefind-ui {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: #00ff41;
+    --pagefind-ui-text: #c0ffc0;
+    --pagefind-ui-background: #0a140a;
+    --pagefind-ui-border: #00ff4133;
+    --pagefind-ui-tag: #00ff41;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 4px;
+    --pagefind-ui-image-border-radius: 4px;
+    --pagefind-ui-image-box-ratio: 3 / 2;
+    --pagefind-ui-font: 'Fira Code', monospace;
+  }
+
+  .pagefind-ui__search-input {
+    background: #0a140a !important;
+    border: 1px solid #00ff4133 !important;
+    color: #c0ffc0 !important;
+    font-family: 'Fira Code', monospace !important;
+  }
+
+  .pagefind-ui__search-input::placeholder {
+    color: #4a7a4a !important;
+  }
+
+  .pagefind-ui__search-input:focus {
+    border-color: #00ff41 !important;
+    box-shadow: 0 0 12px #00ff4133 !important;
+    outline: none !important;
+  }
+
+  .pagefind-ui__result-link {
+    color: #00ff41 !important;
+    font-family: 'Rajdhani', sans-serif !important;
+  }
+
+  .pagefind-ui__result-excerpt {
+    color: #4a7a4a !important;
+  }
+
+  .pagefind-ui__result-tags {
+    color: #4a7a4a !important;
+  }
+
+  .pagefind-ui__drawer {
+    background: #0a140a !important;
+    border: 1px solid #00ff4115 !important;
+  }
+
+  .pagefind-ui__message {
+    color: #4a7a4a !important;
+  }
+
+  .pagefind-ui__button {
+    background: #0f1f0f !important;
+    border: 1px solid #00ff4133 !important;
+    color: #00ff41 !important;
+  }
+
+  .pagefind-ui__filter-name {
+    color: #00ff41 !important;
+  }
+
+  .pagefind-ui__filter-group {
+    border: 1px solid #00ff4115 !important;
+  }
+</style>
