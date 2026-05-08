@@ -1,5 +1,17 @@
+# 构建产物
+dist/
+
+# 依赖
+node_modules/
+
+# Astro 缓存
+.astro/
+
+# Superpowers 工作流
 .superpowers/
 .worktrees/
+
+# 其他
 bug-doctor/
 node-v22.14.0-x64.msi
 paper-writing-assistant-v1.0.0.zip
