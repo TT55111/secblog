@@ -1,0 +1,120 @@
+---
+const currentPath = Astro.url.pathname;
+const navItems = [
+  { href: '/', label: '首页' },
+  { href: '/ctf/', label: 'CTF' },
+  { href: '/vuln/', label: '漏洞分析' },
+  { href: '/about/', label: '关于' },
+];
+---
+
+<nav class="navbar">
+  <a href="/" class="nav-logo">&gt;_ TT<span class="cursor"></span></a>
+  <ul class="nav-links">
+    {navItems.map(item => (
+      <li>
+        <a href={item.href} class:list={[{ active: currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href)) }]}>
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+  <a href="/search/" class="nav-search">[ Ctrl+K ]</a>
+</nav>
+
+<style>
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 0 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(2, 10, 2, 0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid #00ff4115;
+  }
+
+  .nav-logo {
+    font-family: 'Fira Code', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #00ff41;
+    text-shadow: 0 0 10px #00ff4133;
+    letter-spacing: 2px;
+    text-decoration: none;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 18px;
+    background: #00ff41;
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: #4a7a4a;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: #00ff41;
+    text-shadow: 0 0 8px #00ff4133;
+  }
+
+  .nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #00ff41;
+    box-shadow: 0 0 6px #00ff41;
+  }
+
+  .nav-search {
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    color: #4a7a4a;
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #00ff4115;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+
+  .nav-search:hover {
+    border-color: #00ff41;
+    color: #00ff41;
+    box-shadow: 0 0 12px #00ff4133;
+  }
+
+  @media (max-width: 768px) {
+    .navbar { padding: 0 16px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 11px; letter-spacing: 1px; }
+  }
+</style>

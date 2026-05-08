@@ -1,14 +1,39 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>SecBlog</title>
-  </head>
-  <body>
-    <h1>SecBlog</h1>
-  </body>
-</html>
+<BaseLayout>
+  <section class="hero">
+    <h1 class="hero-name">TT</h1>
+    <p class="hero-subtitle">探索未知漏洞 · 攻防之间寻找真理</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 20px 80px;
+  }
+
+  .hero-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 96px;
+    font-weight: 900;
+    color: #00ff41;
+    letter-spacing: 8px;
+    text-shadow: 0 0 10px #00ff41, 0 0 40px #00ff4133, 0 0 80px #00ff4133;
+  }
+
+  .hero-subtitle {
+    font-family: 'Fira Code', monospace;
+    font-size: 16px;
+    color: #4a7a4a;
+    margin-top: 20px;
+    letter-spacing: 3px;
+  }
+</style>
