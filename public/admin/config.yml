@@ -1,0 +1,74 @@
+backend:
+  name: github
+  repo: your-username/secblog
+  branch: master
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+locale: zh_Hans
+
+collections:
+  - name: ctf
+    label: CTF Writeup
+    folder: src/content/ctf
+    create: true
+    delete: true
+    slug: "{{event}}-{{slug}}"
+    extension: md
+    format: yaml-frontmatter
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 日期, name: date, widget: datetime, date_format: YYYY-MM-DD, time_format: false }
+      - { label: 赛事名称, name: event, widget: string }
+      - { label: 分类, name: category, widget: select, options: ["Web", "Pwn", "Crypto", "Reverse", "Misc"] }
+      - { label: 难度, name: difficulty, widget: select, options: ["Easy", "Medium", "Hard"] }
+      - { label: 标签, name: tags, widget: list, allow_add: true }
+      - { label: 排名, name: rank, widget: number, required: false, value_type: int, min: 1 }
+      - { label: 队伍, name: team, widget: string, required: false }
+      - { label: 正文, name: body, widget: markdown }
+
+  - name: vuln
+    label: 漏洞分析
+    folder: src/content/vuln
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    extension: md
+    format: yaml-frontmatter
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 日期, name: date, widget: datetime, date_format: YYYY-MM-DD, time_format: false }
+      - { label: 漏洞类型, name: type, widget: select, options: ["CVE", "0day", "逻辑漏洞", "配置不当"] }
+      - { label: 严重程度, name: severity, widget: select, options: ["Critical", "High", "Medium", "Low"] }
+      - { label: 状态, name: status, widget: select, options: ["patched", "reported", "unpatched"] }
+      - { label: CVE编号, name: cve, widget: string, required: false }
+      - { label: 标签, name: tags, widget: list, allow_add: true }
+      - { label: 正文, name: body, widget: markdown }
+
+  - name: site
+    label: 站点设置
+    files:
+      - label: 个人信息
+        name: meta
+        file: src/content/site/meta.json
+        fields:
+          - { label: 昵称, name: name, widget: string }
+          - { label: 身份, name: role, widget: string }
+          - { label: 简介一句话, name: bio, widget: string }
+          - { label: 简介详细, name: bioExtended, widget: text }
+          - { label: 技能, name: skills, widget: list, allow_add: true }
+          - { label: 目标方向, name: goals, widget: string }
+          - { label: 邮箱, name: email, widget: string }
+          - { label: GitHub, name: github, widget: string }
+          - { label: CTFtime, name: ctftime, widget: string }
+          - label: 社交链接
+            name: socialLinks
+            widget: list
+            allow_add: true
+            fields:
+              - { label: 标签, name: label, widget: string }
+              - { label: 标题, name: title, widget: string }
+              - { label: 链接, name: href, widget: string }

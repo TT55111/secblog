@@ -27,7 +27,28 @@ const vulnCollection = defineCollection({
   }),
 });
 
+const siteCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    name: z.string(),
+    role: z.string(),
+    bio: z.string(),
+    bioExtended: z.string(),
+    skills: z.array(z.string()),
+    goals: z.string(),
+    email: z.string(),
+    github: z.string(),
+    ctftime: z.string(),
+    socialLinks: z.array(z.object({
+      label: z.string(),
+      title: z.string(),
+      href: z.string(),
+    })),
+  }),
+});
+
 export const collections = {
   ctf: ctfCollection,
   vuln: vulnCollection,
+  site: siteCollection,
 };

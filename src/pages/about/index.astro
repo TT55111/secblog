@@ -1,5 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const meta = await getEntry('site', 'meta');
+const siteData = meta?.data ?? {
+  name: 'TT',
+  role: 'Security Researcher & CTF Player',
+  bio: '网络安全方向在校大学生，主攻 Web 安全与二进制安全。',
+  bioExtended: '热衷于 CTF 竞赛，擅长 Web、Crypto 方向，偶尔打打 Pwn。平时也会挖一些漏洞，关注企业安全与红队攻防。',
+  skills: ['Web渗透', '代码审计', '逆向分析', '密码学', 'Python', 'Go', 'Java'],
+  goals: '未来方向：安全服务 / 红队攻防 / 安全研究',
+  email: '',
+  github: '',
+  ctftime: '',
+  socialLinks: [],
+};
 ---
 
 <BaseLayout title="关于 — SecBlog">
@@ -11,23 +26,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     <div class="about-grid">
       <div class="about-card profile-card">
         <div class="avatar-frame">
-          <div class="avatar-placeholder">TT</div>
+          <div class="avatar-placeholder">{siteData.name.slice(0, 2).toUpperCase()}</div>
         </div>
-        <h2 class="profile-name">TT</h2>
-        <p class="profile-role">Security Researcher & CTF Player</p>
+        <h2 class="profile-name">{siteData.name}</h2>
+        <p class="profile-role">{siteData.role}</p>
         <div class="profile-links">
-          <a href="#" class="profile-link" title="GitHub">
-            <span class="link-icon">⌘</span>
-            <span>GitHub</span>
-          </a>
-          <a href="#" class="profile-link" title="CTFtime">
-            <span class="link-icon">⚑</span>
-            <span>CTFtime</span>
-          </a>
-          <a href="#" class="profile-link" title="Email">
-            <span class="link-icon">✉</span>
-            <span>Email</span>
-          </a>
+          {siteData.github && (
+            <a href={`https://${siteData.github}`} class="profile-link" title="GitHub" target="_blank" rel="noopener">
+              <span class="link-icon">⌘</span>
+              <span>GitHub</span>
+            </a>
+          )}
+          {siteData.ctftime && (
+            <a href={`https://${siteData.ctftime}`} class="profile-link" title="CTFtime" target="_blank" rel="noopener">
+              <span class="link-icon">⚑</span>
+              <span>CTFtime</span>
+            </a>
+          )}
+          {siteData.email && (
+            <a href={`mailto:${siteData.email}`} class="profile-link" title="Email">
+              <span class="link-icon">✉</span>
+              <span>Email</span>
+            </a>
+          )}
         </div>
       </div>
 
@@ -40,21 +61,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </div>
         <div class="terminal-body">
           <p><span class="prompt">$</span> cat about.txt</p>
-          <p class="output">网络安全方向在校大学生，主攻 Web 安全与二进制安全。</p>
-          <p class="output">热衷于 CTF 竞赛，擅长 Web、Crypto 方向，偶尔打打 Pwn。</p>
-          <p class="output">平时也会挖一些漏洞，关注企业安全与红队攻防。</p>
+          <p class="output">{siteData.bio}</p>
+          <p class="output">{siteData.bioExtended}</p>
           <p><span class="prompt">$</span> cat skills.txt</p>
           <p class="output">
-            <span class="skill-tag">Web渗透</span>
-            <span class="skill-tag">代码审计</span>
-            <span class="skill-tag">逆向分析</span>
-            <span class="skill-tag">密码学</span>
-            <span class="skill-tag">Python</span>
-            <span class="skill-tag">Go</span>
-            <span class="skill-tag">Java</span>
+            {siteData.skills.map(skill => (
+              <span class="skill-tag">{skill}</span>
+            ))}
           </p>
           <p><span class="prompt">$</span> cat goals.txt</p>
-          <p class="output">未来方向：安全服务 / 红队攻防 / 安全研究</p>
+          <p class="output">{siteData.goals}</p>
           <p><span class="prompt">$</span> <span class="cursor">_</span></p>
         </div>
       </div>
@@ -93,18 +109,24 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       </div>
       <p class="contact-desc">欢迎交流安全相关话题，CTF 组队也欢迎联系！</p>
       <div class="contact-methods">
-        <div class="contact-item">
-          <span class="method-label">Email</span>
-          <span class="method-value">your-email@example.com</span>
-        </div>
-        <div class="contact-item">
-          <span class="method-label">GitHub</span>
-          <span class="method-value">github.com/your-username</span>
-        </div>
-        <div class="contact-item">
-          <span class="method-label">CTFtime</span>
-          <span class="method-value">ctftime.org/user/your-id</span>
-        </div>
+        {siteData.email && (
+          <div class="contact-item">
+            <span class="method-label">Email</span>
+            <span class="method-value">{siteData.email}</span>
+          </div>
+        )}
+        {siteData.github && (
+          <div class="contact-item">
+            <span class="method-label">GitHub</span>
+            <span class="method-value">{siteData.github}</span>
+          </div>
+        )}
+        {siteData.ctftime && (
+          <div class="contact-item">
+            <span class="method-label">CTFtime</span>
+            <span class="method-value">{siteData.ctftime}</span>
+          </div>
+        )}
       </div>
     </div>
   </section>

@@ -1,0 +1,17 @@
+{
+  "name": "TT",
+  "role": "Security Researcher & CTF Player",
+  "bio": "网络安全方向在校大学生，主攻 Web 安全与二进制安全。",
+  "bioExtended": "热衷于 CTF 竞赛，擅长 Web、Crypto 方向，偶尔打打 Pwn。平时也会挖一些漏洞，关注企业安全与红队攻防。",
+  "skills": ["Web渗透", "代码审计", "逆向分析", "密码学", "Python", "Go", "Java"],
+  "goals": "未来方向：安全服务 / 红队攻防 / 安全研究",
+  "email": "your-email@example.com",
+  "github": "github.com/your-username",
+  "ctftime": "ctftime.org/user/your-id",
+  "socialLinks": [
+    { "label": "GH", "title": "GitHub", "href": "#" },
+    { "label": "CT", "title": "CTFtime", "href": "#" },
+    { "label": "TW", "title": "Twitter", "href": "#" },
+    { "label": "EM", "title": "Email", "href": "#" }
+  ]
+}

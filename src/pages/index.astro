@@ -5,6 +5,7 @@ import GlitchText from '../components/GlitchText';
 import ArticleCard from '../components/ArticleCard.astro';
 import TagCloud from '../components/TagCloud.astro';
 import { getAllCtfPosts, getAllVulnPosts, getAllTags } from '../lib/content';
+import { getEntry } from 'astro:content';
 
 const ctfPosts = await getAllCtfPosts();
 const vulnPosts = await getAllVulnPosts();
@@ -12,6 +13,8 @@ const allPosts = [...ctfPosts.map(p => ({ ...p, type: 'ctf' as const })), ...vul
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 6);
 const allTags = await getAllTags();
+
+const meta = await getEntry('site', 'meta');
 
 function extractExcerpt(body: string | undefined): string {
   if (!body) return '';
@@ -26,7 +29,7 @@ function extractExcerpt(body: string | undefined): string {
 }
 
 const heroTags = ['Web Security', 'Pwn', 'Crypto', 'Reverse', 'Bug Bounty'];
-const socialLinks = [
+const socialLinks = meta?.data?.socialLinks ?? [
   { label: 'GH', title: 'GitHub', href: '#' },
   { label: 'CT', title: 'CTFtime', href: '#' },
   { label: 'TW', title: 'Twitter', href: '#' },
