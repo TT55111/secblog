@@ -8,8 +8,6 @@ backend:
 media_folder: public/images/uploads
 public_folder: /images/uploads
 
-locale: zh_Hans
-
 collections:
   - name: ctf
     label: CTF Writeup
